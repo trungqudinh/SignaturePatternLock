@@ -1,18 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
     <TextView
+        android:text="Configuration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/text_view_header"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="75dp"/>
 
-</LinearLayout>
+    <TextView
+        android:text="debug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_view_debug"
+        android:layout_below="@+id/text_view_header"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="75dp"/>
+
+    <TextView
+        android:text="Message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_view_message"
+        android:layout_below="@+id/text_view_debug"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="34dp"/>
+    <Button
+        android:text="Signature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_signature"
+        android:layout_below="@+id/text_view_message"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="27dp"/>
+
+    <TextView
+        android:text="Add more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="66dp"
+        android:id="@+id/text_view_more"
+        android:layout_below="@+id/button_signature"
+        android:layout_centerHorizontal="true"/>
+    <Button
+        android:text="Register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:id="@+id/button_register"
+        android:layout_below="@+id/text_view_more"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>
