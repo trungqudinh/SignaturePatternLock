@@ -47,7 +47,7 @@
         android:layout_marginTop="66dp"
         android:id="@+id/text_view_more"
         android:layout_below="@+id/button_signature"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true" />
     <Button
         android:text="Register"
         android:layout_width="wrap_content"
@@ -55,5 +55,13 @@
         android:layout_marginTop="38dp"
         android:id="@+id/button_register"
         android:layout_below="@+id/text_view_more"
+        android:layout_centerHorizontal="true"/>
+    <Button
+        android:text="Exit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:id="@+id/button_exit"
+        android:layout_below="@+id/button_register"
         android:layout_centerHorizontal="true"/>
 </RelativeLayout>

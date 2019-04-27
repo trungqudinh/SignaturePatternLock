@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:text="Draw your signature 5 times"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/regTextView"
+        android:textSize="16sp"
+        android:layout_alignBaseline="@+id/button_next"
+        android:layout_alignBottom="@+id/button_next"
+        android:layout_centerHorizontal="true"/>
+    <hcmus.hcb.signaturepatternlock.DrawView
+        android:layout_alignParentTop="true"
+        android:id="@+id/drawingViewReg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button_next"/>
+
+    <Button
+        android:text="Next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="button_next_onClicked"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/button_next"/>
+
+    <Button
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="Clear"
+        android:onClick="button_clear_onClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_clear"/>
+</RelativeLayout>
