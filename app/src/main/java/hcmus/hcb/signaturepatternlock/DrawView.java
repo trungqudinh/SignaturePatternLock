@@ -4,8 +4,14 @@ import android.content.Context;
 
 import android.graphics.*;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DrawView extends View
 {
@@ -31,7 +37,7 @@ public class DrawView extends View
         drawPaint = new Paint();
         drawPaint.setColor(0xFF000000);
         drawPaint.setAntiAlias(true);
-        drawPaint.setStrokeWidth(5);
+        drawPaint.setStrokeWidth(10);
         drawPaint.setStyle(Paint.Style.STROKE);
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -100,5 +106,52 @@ public class DrawView extends View
         startTime = Long.MAX_VALUE;
         endTime = 0;
         invalidate();
+    }
+
+    public List<String> getBinnaryImage(String backgroundCharacter, String foregroundCharacter, float scalingPercent)
+    {
+        ArrayList<String> binaryImage = new ArrayList<>();
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(canvasBitmap,(int)(canvasBitmap.getWidth()*scalingPercent), (int)(canvasBitmap.getHeight()*scalingPercent), true);
+        for (int i = 1; i < resizedBitmap.getHeight(); i++)
+        {
+            String res = "";
+            for (int j = 1; j < resizedBitmap.getWidth(); j++)
+            {
+                if (resizedBitmap.getPixel(j, i) == -1)
+                    res += backgroundCharacter;
+                else
+                    res += foregroundCharacter;
+            }
+            binaryImage.add(res);
+        }
+        return binaryImage;
+    }
+
+    public List<String> getBinnaryImage(float scalingPercent)
+    {
+        return getBinnaryImage(" ", "1", scalingPercent);
+    }
+
+    public List<String> getBinnaryImage()
+    {
+        return getBinnaryImage(" ", "1", 1);
+    }
+
+    public void writeData()
+    {
+
+        Log.i("WRITING", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>=====================");
+        String filename = "signatureData.txt";
+        String fileContents = "ahihi";
+        FileOutputStream outputStream;
+        Context ctx = getContext();
+        try {
+            outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(fileContents.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.i("WRITING", "=====================<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     }
 }
