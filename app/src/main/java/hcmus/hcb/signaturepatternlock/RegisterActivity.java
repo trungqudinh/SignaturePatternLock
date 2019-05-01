@@ -44,39 +44,9 @@ public class RegisterActivity extends Activity
 
     public void button_debug_onClicked(View view)
     {
-        List<String> image = drawView.getBinnaryImage();
-        Log.d("DRAWVIEW", "===================================================================");
-        Log.d("DRAWVIEW", "Height: " + image.size());
-        Log.d("DRAWVIEW", "Width " + image.get(1).length());
-
-        for (String line : image)
-        {
-            Log.d("DRAWVIEW", line);
-        }
-        /*for (int i = 1; i < image.size(); i++) {
-            Log.i("DRAWVIEW", String.format("%5d %s", i, image.get(i)));
-        }*/
-
-
-//        Log.d("DRAWVIEW", "==========================DEBUG SIZE=========================================");
-
-        /*ArrayList<String> str = new ArrayList<>();
-        String tmp = "";
-        for(int i=0; i < 1080; i++)
-            tmp += Integer.toString(i % 10);
-        for(int i=0; i < 1743; i++)
-            str.add(tmp);
-
-        //for (String t : str)
-        Log.d("DRAWVIEW", "size of str = " + str.size());
-        Log.d("DRAWVIEW", "size of item = " + str.get(1).length());
-        /*for(int i = 0; i < str.size(); i++)
-        {
-            Log.d("DRAWVIEW", String.format("%5d %s", i, str.get(i)));
-        }*/
-//        writeData(image);
-        Log.d("DRAWVIEW", "===================================================================");
+        logImage(false);
     }
+
     public void writeData(List<String> data)
     {
         Log.i("WRITING", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>==========================================================");
@@ -84,17 +54,89 @@ public class RegisterActivity extends Activity
         //String fileContents = "ahihi23985743489";
         FileOutputStream outputStream;
         //Context ctx = getApplicationContext();
-        try {
+        try
+        {
             outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-            for(String item : data)
+            for (String item : data)
             {
                 outputStream.write((item + "\n").getBytes());
             }
 
             outputStream.close();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
         Log.i("WRITING", "====================================================<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    }
+
+    public void logImage(List<List<Integer>> image, char backgroundCharacter, char foregroundCharacter)
+    {
+        Log.d("LOG_IMAGE", "===================================================================");
+        Log.d("LOG_IMAGE", "Height: " + image.size());
+        Log.d("LOG_IMAGE", "Width " + image.get(0).size());
+
+
+        for (List<Integer> line : image)
+        {
+            String lineAsString = "";
+            for(int value : line)
+            {
+                if (value == 0)
+                {
+                    lineAsString += backgroundCharacter;
+                }
+                else
+                {
+                    lineAsString += foregroundCharacter;
+                }
+            }
+            Log.d("LOG_IMAGE", lineAsString);
+        }
+
+        Log.d("LOG_IMAGE", "===================================================================");
+    }
+    public void logImage(List<List<Integer>> image)
+    {
+        logImage(image, ' ', '1');
+    }
+    public void logImage(boolean portraitView)
+    {
+
+        List<List<Integer>> image = drawView.getBinnaryImage(0.1);
+        if (portraitView)
+        {
+            logImage(image);
+        } else
+        {
+            List<List<Integer>> landscapeImage = getRotateMatrix(image);
+            logImage(landscapeImage);
+        }
+    }
+
+    public List<List<Integer>> getRotateMatrix(List<List<Integer>> srcMatrix)
+    {
+        List<List<Integer>> res = new ArrayList<>();
+        for (int i = 0; i < srcMatrix.get(0).size(); i++)
+        {
+            res.add(new ArrayList<Integer>());
+        }
+
+        for(List<Integer> lineSrc : srcMatrix)
+        {
+            int j = srcMatrix.get(0).size() - 1;
+            for (List<Integer> lineDst : res)
+            {
+                lineDst.add(lineSrc.get(j));
+                j--;
+            }
+
+        }
+        return res;
+    }
+
+    public void logImage()
+    {
+        logImage(true);
     }
 }

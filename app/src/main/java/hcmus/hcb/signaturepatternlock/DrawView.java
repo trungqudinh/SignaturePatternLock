@@ -10,6 +10,7 @@ import android.view.View;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,33 +109,36 @@ public class DrawView extends View
         invalidate();
     }
 
-    public List<String> getBinnaryImage(String backgroundCharacter, String foregroundCharacter, float scalingPercent)
+    public List<List<Integer>> getBinnaryImage(int backgroundValue, int foregroundValue, double scalingPercent)
     {
-        ArrayList<String> binaryImage = new ArrayList<>();
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(canvasBitmap,(int)(canvasBitmap.getWidth()*scalingPercent), (int)(canvasBitmap.getHeight()*scalingPercent), true);
+        List<List<Integer>> binaryImage = new ArrayList<>();
+        int newWidth = (int) (canvasBitmap.getWidth() * scalingPercent);
+        int newHeight = (int) (canvasBitmap.getHeight() * scalingPercent);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(canvasBitmap, newWidth, newHeight, true);
+
         for (int i = 1; i < resizedBitmap.getHeight(); i++)
         {
-            String res = "";
+            List<Integer> line = new ArrayList<>();
             for (int j = 1; j < resizedBitmap.getWidth(); j++)
             {
                 if (resizedBitmap.getPixel(j, i) == -1)
-                    res += backgroundCharacter;
+                    line.add(backgroundValue);
                 else
-                    res += foregroundCharacter;
+                    line.add(foregroundValue);
             }
-            binaryImage.add(res);
+            binaryImage.add(line);
         }
         return binaryImage;
     }
 
-    public List<String> getBinnaryImage(float scalingPercent)
+    public List<List<Integer>> getBinnaryImage(double scalingPercent)
     {
-        return getBinnaryImage(" ", "1", scalingPercent);
+        return getBinnaryImage(0, 1, scalingPercent);
     }
 
-    public List<String> getBinnaryImage()
+    public List<List<Integer>> getBinnaryImage()
     {
-        return getBinnaryImage(" ", "1", 1);
+        return getBinnaryImage(1);
     }
 
     public void writeData()
@@ -145,11 +149,13 @@ public class DrawView extends View
         String fileContents = "ahihi";
         FileOutputStream outputStream;
         Context ctx = getContext();
-        try {
+        try
+        {
             outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
             outputStream.write(fileContents.getBytes());
             outputStream.close();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
         Log.i("WRITING", "=====================<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
