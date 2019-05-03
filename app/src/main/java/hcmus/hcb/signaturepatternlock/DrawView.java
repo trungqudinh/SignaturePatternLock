@@ -24,6 +24,11 @@ public class DrawView extends View
     private Canvas drawCanvas;
     private Bitmap canvasBitmap;
 
+    public Bitmap getCanvasBitmap()
+    {
+        return canvasBitmap;
+    }
+
     public DrawView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
