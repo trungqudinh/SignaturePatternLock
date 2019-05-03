@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -45,18 +46,29 @@ public class RegisterActivity extends Activity
     public void button_debug_onClicked(View view)
     {
         logImage(false);
+        List<String> testData = new ArrayList<>();
+        testData.add("abc");
+        testData.add("123443");
+        //writeData(testData);
+        helper.writeFileOnInternalStorage("test01.txt", "this's a test file");
     }
 
     public void writeData(List<String> data)
     {
         Log.i("WRITING", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>==========================================================");
-        String filename = "signatureData1.txt";
+        String filename = "file_test.txt";
         //String fileContents = "ahihi23985743489";
+        File path = new File(getFilesDir(),"test_dir");
+        if(!path.exists()){
+            path.mkdir();
+        }
         FileOutputStream outputStream;
         //Context ctx = getApplicationContext();
         try
         {
-            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            //outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream = new FileOutputStream(new File(path, filename));
+
             for (String item : data)
             {
                 outputStream.write((item + "\n").getBytes());
@@ -139,4 +151,5 @@ public class RegisterActivity extends Activity
     {
         logImage(true);
     }
+
 }
