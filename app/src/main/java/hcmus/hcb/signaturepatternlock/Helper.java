@@ -2,29 +2,38 @@ package hcmus.hcb.signaturepatternlock;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 
 public class Helper extends Activity
 {
-    private Context context;
+    private Context clientContext;
+    public Context getClientContext()
+    {
+        return clientContext;
+    }
     public Helper(Context context)
     {
-        this.context = context;
+        this.clientContext = context;
     }
     public void showToast(String text)
     {
-        Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(getClientContext(), text, Toast.LENGTH_LONG);
         Log.i(">>>> Helper <<<<", "==================== Starting block =================");
         Log.i(">>>> Helper <<<<", text);
         Log.i(">>>> Helper <<<<", "==================== Ending block ===================");
         toast.show();
     }
     public void writeFileOnInternalStorage(String sFileName, String sBody){
-        File file = new File(context.getFilesDir(),"mydir");
+        File file = new File(getClientContext().getFilesDir(),"mydir");
         if(!file.exists()){
             file.mkdir();
         }
@@ -40,5 +49,53 @@ public class Helper extends Activity
             e.printStackTrace();
 
         }
+    }
+    public void writeData(String fileName, List<String> data)
+    {
+        Log.i("WRITING", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>==========================================================");
+        File path = new File(getClientContext().getFilesDir(),"signature_data");
+        if(!path.exists()){
+            path.mkdir();
+        }
+        FileOutputStream outputStream;
+        //Context ctx = getApplicationContext();
+        try
+        {
+            //outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream = new FileOutputStream(new File(path, fileName));
+            for (String item : data)
+            {
+                outputStream.write((item + "\n").getBytes());
+            }
+
+            outputStream.close();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        Log.i("WRITING", "====================================================<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    }
+    public String saveToInternalStorage(Bitmap bitmapImage){
+        ContextWrapper cw = new ContextWrapper(getClientContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath=new File(directory,"sample.jpg");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return directory.getAbsolutePath();
     }
 }

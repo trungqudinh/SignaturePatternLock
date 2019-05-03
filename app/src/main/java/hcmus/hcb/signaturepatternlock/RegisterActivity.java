@@ -47,39 +47,45 @@ public class RegisterActivity extends Activity
     {
         logImage(false);
         List<String> testData = new ArrayList<>();
-        testData.add("abc");
-        testData.add("123443");
-        //writeData(testData);
-        helper.writeFileOnInternalStorage("test01.txt", "this's a test file");
+        String data = "";
+        StringBuilder strBulder = new StringBuilder();
+        int count = 0;
+        List<List<Integer>> image = getCurrentBinaryImage();
+        for(int i = 0; i < image.size(); i++)
+        {
+            for(int j = 0; j < image.get(i).size(); j++)
+            {
+                strBulder.append(image.get(i).get(j));
+            }
+            //data += "\n";
+            strBulder.append('\n');
+            Log.i("LINE",String.format("+++++++++++++++++++++++%d++++++++++++++++++++++++++++++++++", count++));
+        }
+        data = strBulder.toString();
+        /*for(List<Integer> line : getCurrentBinaryImage())
+        {
+            for(int value : line)
+            {
+                data += Integer.toString(value);
+            }
+            data += "\n";
+            Log.i("LINE",String.format("+++++++++++++++++++++++%d++++++++++++++++++++++++++++++++++", count++));
+        }*/
+        testData.add(data);
+        //testData.add("ahyii");
+        helper.writeData("signature_01.txt", testData);
+        helper.saveToInternalStorage(drawView.getCanvasBitmap());
+        //helper.writeFileOnInternalStorage("test01.txt", "this's a test file");
     }
 
-    public void writeData(List<String> data)
+
+    private List<List<Integer>> getCurrentBinaryImage(double scalingPercent)
     {
-        Log.i("WRITING", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>==========================================================");
-        String filename = "file_test.txt";
-        //String fileContents = "ahihi23985743489";
-        File path = new File(getFilesDir(),"test_dir");
-        if(!path.exists()){
-            path.mkdir();
-        }
-        FileOutputStream outputStream;
-        //Context ctx = getApplicationContext();
-        try
-        {
-            //outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-            outputStream = new FileOutputStream(new File(path, filename));
-
-            for (String item : data)
-            {
-                outputStream.write((item + "\n").getBytes());
-            }
-
-            outputStream.close();
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        Log.i("WRITING", "====================================================<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        return drawView.getBinnaryImage(scalingPercent);
+    }
+    private List<List<Integer>> getCurrentBinaryImage()
+    {
+        return getCurrentBinaryImage(1);
     }
 
     public void logImage(List<List<Integer>> image, char backgroundCharacter, char foregroundCharacter)
