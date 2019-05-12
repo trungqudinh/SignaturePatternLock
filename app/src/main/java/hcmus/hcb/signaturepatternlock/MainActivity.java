@@ -82,13 +82,7 @@ public class MainActivity extends Activity
             @Override
             public void onClick(View v)
             {
-
-                btnEnableLock.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        helper.showToast("button clicked");
+                helper.showToast("button clicked");
                         if (btnEnableLock.getText().equals("Enable"))
                         {
                             startLock();
@@ -103,8 +97,6 @@ public class MainActivity extends Activity
                             btnEnableLock.setText("Enable");
                         }
 
-                    }
-                });
             }
         });
     }
