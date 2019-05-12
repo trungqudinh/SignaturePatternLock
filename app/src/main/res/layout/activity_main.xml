@@ -38,7 +38,8 @@
         android:id="@+id/button_signature"
         android:layout_below="@+id/text_view_message"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="27dp"/>
+        android:layout_marginTop="27dp"
+        android:onClick="button_signature_onClicked"/>
 
     <TextView
         android:text="Add more"
@@ -57,11 +58,19 @@
         android:layout_below="@+id/text_view_more"
         android:layout_centerHorizontal="true"/>
     <Button
+        android:text="Enable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:id="@+id/button_enable"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/button_register"/>
+    <Button
         android:text="Exit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="38dp"
         android:id="@+id/button_exit"
-        android:layout_below="@+id/button_register"
+        android:layout_below="@+id/button_enable"
         android:layout_centerHorizontal="true"/>
 </RelativeLayout>

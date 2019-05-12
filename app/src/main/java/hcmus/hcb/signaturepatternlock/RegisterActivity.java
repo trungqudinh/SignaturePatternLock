@@ -1,14 +1,10 @@
 package hcmus.hcb.signaturepatternlock;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,11 +74,11 @@ public class RegisterActivity extends Activity
         //helper.writeFileOnInternalStorage("test01.txt", "this's a test file");
     }
 
-
     private List<List<Integer>> getCurrentBinaryImage(double scalingPercent)
     {
         return drawView.getBinnaryImage(scalingPercent);
     }
+
     private List<List<Integer>> getCurrentBinaryImage()
     {
         return getCurrentBinaryImage(1);
