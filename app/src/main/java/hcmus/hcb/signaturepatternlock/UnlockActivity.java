@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 public class UnlockActivity extends Activity
 {
@@ -14,6 +16,9 @@ public class UnlockActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         helper = new Helper(getApplicationContext());
+
+        makeActivityOverlay();
+
         setContentView(R.layout.activity_unlock);
     }
 
@@ -22,5 +27,14 @@ public class UnlockActivity extends Activity
         helper.showToast("UNLOCKING");
         Log.d("UNLOCK", "- > -> -> -> ->  > -> ->  > -> -> UNLOCKING");
         this.finish();
+    }
+    private void makeActivityOverlay()
+    {
+        this.getWindow().addFlags(
+            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_FULLSCREEN
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 }
