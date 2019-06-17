@@ -16,14 +16,73 @@ import java.util.List;
 
 public class DrawView extends View
 {
+    class Point
+    {
+        private float x, y;
+        private long time;
+        private double degree;
 
+        public Point(float x, float y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+
+        public float getX()
+        {
+            return x;
+        }
+
+        public void setX(float x)
+        {
+            this.x = x;
+        }
+
+        public float getY()
+        {
+            return y;
+        }
+
+        public void setY(float y)
+        {
+            this.y = y;
+        }
+
+        public long getTime()
+        {
+            return time;
+        }
+
+        public void setTime(long time)
+        {
+            this.time = time;
+        }
+
+        public double getDegree()
+        {
+            return degree;
+        }
+
+        public void setDegree(double degree)
+        {
+            this.degree = degree;
+        }
+
+        @Override
+        public String toString()
+        {
+            return x + "-" + y + "-" + degree;
+        }
+    }
     private long startTime;
-    private long endTime;
     private Path drawPath;
     private Paint drawPaint;
     private Canvas drawCanvas;
     private Bitmap canvasBitmap;
-
+    private float lastX, lastY;
+    private Point[] lastPoints = {null, null, null, null};
+    public static ArrayList<Point> markedPoints;
+    public static ArrayList<Point> points;
     public Bitmap getCanvasBitmap()
     {
         return canvasBitmap;
@@ -32,8 +91,8 @@ public class DrawView extends View
     public DrawView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        startTime = Long.MAX_VALUE;
-        endTime = 0;
+        //startTime = Long.MAX_VALUE;
+        //endTime = 0;
         setupDrawing();
     }
 
@@ -47,6 +106,9 @@ public class DrawView extends View
         drawPaint.setStyle(Paint.Style.STROKE);
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
+
+        markedPoints = new ArrayList<>();
+        points = new ArrayList<>();
     }
 
     @Override
@@ -74,23 +136,54 @@ public class DrawView extends View
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        float touchX = event.getX();
-        float touchY = event.getY();
+        Point currentPoint = new Point(event.getX(), event.getY());
         switch (event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
-                drawPath.moveTo(touchX, touchY);
-                if (System.currentTimeMillis() < startTime) startTime = System.currentTimeMillis();
+                if (startTime == 0) {
+                    startTime = System.currentTimeMillis();
+                    currentPoint.setTime(0);
+                } else
+                    currentPoint.setTime(System.currentTimeMillis() - startTime);
+                drawPath.reset();
+                drawPath.moveTo(currentPoint.getX(), currentPoint.getY());
+                currentPoint.setDegree(0);
+                markedPoints.add(currentPoint);
+                lastPoints[2] = lastPoints[3] = lastPoints[1] = currentPoint;
+                lastX = currentPoint.getX();
+                lastY = currentPoint.getY();
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
-                drawPath.lineTo(touchX, touchY);
+                currentPoint.setTime(System.currentTimeMillis() - startTime);
+                Point ptemp = lastPoints[2];
+                lastPoints[2] = lastPoints[3];
+                lastPoints[3] = currentPoint;
+                drawPath.quadTo(lastX, lastY, (currentPoint.getX() + lastX) / 2, (currentPoint.getY() + lastY) / 2);
+                lastX = currentPoint.getX();
+                lastY = currentPoint.getY();
+
+                double angleDegree = getDegree(2, lastPoints[1], lastPoints[2], lastPoints[3]);
+                // get point which has the angle < cachingDegree Degree
+                int filterDegree = 160;
+                if (angleDegree < filterDegree)
+                {
+                    lastPoints[2].setDegree(angleDegree);
+                    lastPoints[2].setTime(System.currentTimeMillis() - startTime);
+                    if (lastPoints[2].getTime() < 3000L) {
+                        markedPoints.add(lastPoints[2]);
+                    }
+                    lastPoints[1] = ptemp;
+                }
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
+                currentPoint.setTime(System.currentTimeMillis() - startTime);
+                currentPoint.setDegree(0);
+                markedPoints.add(currentPoint);
+                drawPath.lineTo(lastX, lastY);
                 drawCanvas.drawPath(drawPath, drawPaint);
                 drawPath.reset();
-                if (System.currentTimeMillis() > endTime) endTime = System.currentTimeMillis();
                 invalidate();
                 break;
             default:
@@ -109,8 +202,7 @@ public class DrawView extends View
                 canvasBitmap.setPixel(j, i, 0xFFFFFFFF);
             }
         }
-        startTime = Long.MAX_VALUE;
-        endTime = 0;
+        startTime = 0;
         invalidate();
     }
 
@@ -164,5 +256,32 @@ public class DrawView extends View
             e.printStackTrace();
         }
         Log.i("WRITING", "=====================<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    }
+
+    // get degree at P2
+    // If unit = 1, return as Radian
+    // If unit = 2, return as Degree
+    public double getDegree(int unit, Point p1, Point p2, Point p3) {
+        double resultAsRadian = 0;
+        if ((p1.x == p2.x && p2.x == p3.x) || (p1.y == p2.y && p2.y == p3.y))
+            resultAsRadian = Math.PI;
+        else {
+            double a = (p3.x - p2.x) * (p3.x - p2.x) + (p3.y - p2.y)
+                * (p3.y - p2.y);
+            double b = (p3.x - p1.x) * (p3.x - p1.x) + (p3.y - p1.y)
+                * (p3.y - p1.y);
+            double c = (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y)
+                * (p2.y - p1.y);
+            resultAsRadian = Math.acos((a + c - b) / (2 * Math.sqrt(c) * Math.sqrt(a)));
+            //temp * 180 / Math.PI < cachingDegree
+        }
+        if (unit == 2)
+        {
+            return resultAsRadian * 180 / Math.PI;
+        }
+        else
+        {
+            return resultAsRadian;
+        }
     }
 }
