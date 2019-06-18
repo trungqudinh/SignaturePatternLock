@@ -52,7 +52,7 @@ public class RegisterActivity extends Activity
         helper.showToast("Accept button clicked");
         try
         {
-            int k = mNetwork.recognize(drawView.nomalizeInput(DrawView.markedPoints, 100));
+            int k = mNetwork.recognize(drawView.nomalizeInput(drawView.markedPoints, 100));
             temp += k + " ";
             count++;
             if (5 - count > 0)

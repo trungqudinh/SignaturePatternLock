@@ -21,7 +21,7 @@ public class WatchDogReceiver extends BroadcastReceiver
             //screenOn = false;
             Intent mIntent = new Intent(context, UnlockActivity.class);
             mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(mIntent);
+            //context.startActivity(mIntent);
         }
         else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON))
         {
@@ -30,6 +30,7 @@ public class WatchDogReceiver extends BroadcastReceiver
             Log.i("ACTION_SCREEN_ON", "================================ACTION_SCREEN_ON================================");
             Intent intent11 = new Intent(context, UnlockActivity.class);
             intent11.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent11);
             //screenOn = true;
         }
         else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED))

@@ -21,8 +21,14 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".UnlockActivity" />
-
+        <activity
+            android:name=".UnlockActivity"
+            android:showOnLockScreen="true"
+            android:screenOrientation="sensorPortrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@xml/policies" />

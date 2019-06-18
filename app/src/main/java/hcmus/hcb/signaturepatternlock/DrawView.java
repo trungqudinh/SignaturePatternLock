@@ -88,8 +88,8 @@ public class DrawView extends View
     private Bitmap canvasBitmap;
     private float lastX, lastY;
     private Point[] lastPoints = {null, null, null, null};
-    public static ArrayList<Point> markedPoints;
-    public static ArrayList<Point> points;
+    public ArrayList<Point> markedPoints;
+    public ArrayList<Point> points;
 
     public Bitmap getCanvasBitmap()
     {
@@ -103,9 +103,18 @@ public class DrawView extends View
         //endTime = 0;
         setupDrawing();
     }
-
+    public DrawView(Context context)
+    {
+        super(context);
+        //startTime = Long.MAX_VALUE;
+        //endTime = 0;
+        //setupDrawing();
+        setupDrawing();
+        Log.d("DrawView", "Ong noi may ne !!!!!");
+    }
     private void setupDrawing()
     {
+        Log.d("DrawView", "setting up drawing");
         drawPath = new Path();
         drawPaint = new Paint();
         drawPaint.setColor(0xFF000000);
@@ -115,7 +124,13 @@ public class DrawView extends View
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
 
+        Log.d("DrawView", "Instantiate marked points");
         markedPoints = new ArrayList<>();
+
+        if (markedPoints == null)
+        {
+            Log.d("DrawView", "oh shit, marked point is NULL");
+        }
         points = new ArrayList<>();
     }
 
@@ -231,6 +246,8 @@ public class DrawView extends View
             }
         }
         startTime = 0;
+        markedPoints = new ArrayList<>();
+        points = new ArrayList<>();
         invalidate();
     }
 
@@ -351,7 +368,7 @@ public class DrawView extends View
                     + " Time = " + time + " - " + input.get(index - 1).time);
             }
         }
-        DrawView.markedPoints = newCatched;
+        this.markedPoints = newCatched;
         return list;
     }
 }
