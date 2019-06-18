@@ -126,11 +126,8 @@ public class DrawView extends View
 
         Log.d("DrawView", "Instantiate marked points");
         markedPoints = new ArrayList<>();
+        startTime = 0;
 
-        if (markedPoints == null)
-        {
-            Log.d("DrawView", "oh shit, marked point is NULL");
-        }
         points = new ArrayList<>();
     }
 

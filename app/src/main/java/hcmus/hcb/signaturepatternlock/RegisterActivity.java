@@ -86,41 +86,6 @@ public class RegisterActivity extends Activity
         }
     }
 
-    public void button_debug_onClicked(View view)
-    {
-        logImage(false);
-        List<String> testData = new ArrayList<>();
-        String data = "";
-        StringBuilder strBulder = new StringBuilder();
-        int count = 0;
-        List<List<Integer>> image = getCurrentBinaryImage();
-        for (int i = 0; i < image.size(); i++)
-        {
-            for (int j = 0; j < image.get(i).size(); j++)
-            {
-                strBulder.append(image.get(i).get(j));
-            }
-            //data += "\n";
-            strBulder.append('\n');
-            Log.i("LINE", String.format("+++++++++++++++++++++++%d++++++++++++++++++++++++++++++++++", count++));
-        }
-        data = strBulder.toString();
-        /*for(List<Integer> line : getCurrentBinaryImage())
-        {
-            for(int value : line)
-            {
-                data += Integer.toString(value);
-            }
-            data += "\n";
-            Log.i("LINE",String.format("+++++++++++++++++++++++%d++++++++++++++++++++++++++++++++++", count++));
-        }*/
-        testData.add(data);
-        //testData.add("ahyii");
-        helper.writeData("signature_01.txt", testData);
-        helper.saveToInternalStorage(drawView.getCanvasBitmap());
-        //helper.writeFileOnInternalStorage("test01.txt", "this's a test file");
-    }
-
     private List<List<Integer>> getCurrentBinaryImage(double scalingPercent)
     {
         return drawView.getBinnaryImage(scalingPercent);

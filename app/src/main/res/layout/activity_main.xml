@@ -1,50 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-    <TextView
-        android:text="Configuration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/text_view_header"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="75dp"/>
-
-    <TextView
-        android:text="debug"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/text_view_debug"
-        android:layout_below="@+id/text_view_header"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="75dp"/>
-
-    <TextView
-        android:text="Message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/text_view_message"
-        android:layout_below="@+id/text_view_debug"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp"/>
-<!--
-    <Button
-        android:text="Signature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_signature"
-        android:layout_below="@+id/text_view_message"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="27dp"
-        android:onClick="button_signature_onClicked"/>
--->
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    tools:context=".MainActivity"
+    android:padding="20dp">
     <LinearLayout
         android:layout_marginTop="27dp"
-        android:layout_below="@+id/text_view_message"
         android:layout_centerHorizontal="true"
         android:id="@+id/configuration"
         android:layout_width="wrap_content"
@@ -63,36 +28,25 @@
             android:scrollbarSize="10dp">
             </NumberPicker>
     </LinearLayout>
-    <TextView
-        android:text="Add more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="66dp"
-        android:id="@+id/text_view_more"
-        android:layout_below="@+id/configuration"
-        android:layout_centerHorizontal="true" />
+
     <Button
         android:text="Register"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="38dp"
+        android:layout_marginTop="36dp"
         android:id="@+id/button_register"
-        android:layout_below="@+id/text_view_more"
         android:layout_centerHorizontal="true"/>
     <Button
         android:text="Enable"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="38dp"
-        android:id="@+id/button_enable"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/button_register"/>
+        android:layout_marginTop="36dp"
+        android:id="@+id/button_enable"/>
     <Button
         android:text="Exit"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="38dp"
+        android:layout_marginTop="36dp"
         android:id="@+id/button_exit"
-        android:layout_below="@+id/button_enable"
         android:layout_centerHorizontal="true"/>
-</RelativeLayout>
+</LinearLayout>
