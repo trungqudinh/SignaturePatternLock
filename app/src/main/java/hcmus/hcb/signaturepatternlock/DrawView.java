@@ -74,6 +74,13 @@ public class DrawView extends View
             return x + "-" + y + "-" + degree;
         }
     }
+
+    private enum AngularMeasurementUnit
+    {
+        Radian,
+        Degree
+    }
+
     private long startTime;
     private Path drawPath;
     private Paint drawPaint;
@@ -83,6 +90,7 @@ public class DrawView extends View
     private Point[] lastPoints = {null, null, null, null};
     public static ArrayList<Point> markedPoints;
     public static ArrayList<Point> points;
+
     public Bitmap getCanvasBitmap()
     {
         return canvasBitmap;
@@ -133,6 +141,63 @@ public class DrawView extends View
         canvas.drawPath(drawPath, drawPaint);
     }
 
+    private void onTouchActionDown(Point currentPoint)
+    {
+        if (startTime == 0)
+        {
+            startTime = System.currentTimeMillis();
+            currentPoint.setTime(0);
+        }
+        else
+        {
+            currentPoint.setTime(System.currentTimeMillis() - startTime);
+        }
+        drawPath.reset();
+        drawPath.moveTo(currentPoint.getX(), currentPoint.getY());
+        currentPoint.setDegree(0);
+        markedPoints.add(currentPoint);
+        lastPoints[2] = lastPoints[3] = lastPoints[1] = currentPoint;
+        lastX = currentPoint.getX();
+        lastY = currentPoint.getY();
+        invalidate();
+    }
+
+    private void onTouchActionMove(Point currentPoint)
+    {
+        currentPoint.setTime(System.currentTimeMillis() - startTime);
+        Point ptemp = lastPoints[2];
+        lastPoints[2] = lastPoints[3];
+        lastPoints[3] = currentPoint;
+        drawPath.quadTo(lastX, lastY, (currentPoint.getX() + lastX) / 2, (currentPoint.getY() + lastY) / 2);
+        lastX = currentPoint.getX();
+        lastY = currentPoint.getY();
+
+        double angleDegree = getDegree(AngularMeasurementUnit.Degree, lastPoints[1], lastPoints[2], lastPoints[3]);
+        // get point which has the angle < cachingDegree Degree
+        int filterDegree = 160;
+        if (angleDegree < filterDegree)
+        {
+            lastPoints[2].setDegree(angleDegree);
+            lastPoints[2].setTime(System.currentTimeMillis() - startTime);
+            if (lastPoints[2].getTime() < 3000L)
+            {
+                markedPoints.add(lastPoints[2]);
+            }
+            lastPoints[1] = ptemp;
+        }
+        invalidate();
+    }
+
+    private void onTouchActionUp(Point currentPoint)
+    {
+        currentPoint.setTime(System.currentTimeMillis() - startTime);
+        currentPoint.setDegree(0);
+        markedPoints.add(currentPoint);
+        drawPath.lineTo(lastX, lastY);
+        drawCanvas.drawPath(drawPath, drawPaint);
+        drawPath.reset();
+        invalidate();
+    }
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
@@ -140,51 +205,13 @@ public class DrawView extends View
         switch (event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
-                if (startTime == 0) {
-                    startTime = System.currentTimeMillis();
-                    currentPoint.setTime(0);
-                } else
-                    currentPoint.setTime(System.currentTimeMillis() - startTime);
-                drawPath.reset();
-                drawPath.moveTo(currentPoint.getX(), currentPoint.getY());
-                currentPoint.setDegree(0);
-                markedPoints.add(currentPoint);
-                lastPoints[2] = lastPoints[3] = lastPoints[1] = currentPoint;
-                lastX = currentPoint.getX();
-                lastY = currentPoint.getY();
-                invalidate();
+                onTouchActionDown(currentPoint);
                 break;
             case MotionEvent.ACTION_MOVE:
-                currentPoint.setTime(System.currentTimeMillis() - startTime);
-                Point ptemp = lastPoints[2];
-                lastPoints[2] = lastPoints[3];
-                lastPoints[3] = currentPoint;
-                drawPath.quadTo(lastX, lastY, (currentPoint.getX() + lastX) / 2, (currentPoint.getY() + lastY) / 2);
-                lastX = currentPoint.getX();
-                lastY = currentPoint.getY();
-
-                double angleDegree = getDegree(2, lastPoints[1], lastPoints[2], lastPoints[3]);
-                // get point which has the angle < cachingDegree Degree
-                int filterDegree = 160;
-                if (angleDegree < filterDegree)
-                {
-                    lastPoints[2].setDegree(angleDegree);
-                    lastPoints[2].setTime(System.currentTimeMillis() - startTime);
-                    if (lastPoints[2].getTime() < 3000L) {
-                        markedPoints.add(lastPoints[2]);
-                    }
-                    lastPoints[1] = ptemp;
-                }
-                invalidate();
+                onTouchActionMove(currentPoint);
                 break;
             case MotionEvent.ACTION_UP:
-                currentPoint.setTime(System.currentTimeMillis() - startTime);
-                currentPoint.setDegree(0);
-                markedPoints.add(currentPoint);
-                drawPath.lineTo(lastX, lastY);
-                drawCanvas.drawPath(drawPath, drawPaint);
-                drawPath.reset();
-                invalidate();
+                onTouchActionUp(currentPoint);
                 break;
             default:
                 return false;
@@ -251,7 +278,8 @@ public class DrawView extends View
             outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
             outputStream.write(fileContents.getBytes());
             outputStream.close();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -259,13 +287,15 @@ public class DrawView extends View
     }
 
     // get degree at P2
-    // If unit = 1, return as Radian
-    // If unit = 2, return as Degree
-    public double getDegree(int unit, Point p1, Point p2, Point p3) {
+    public double getDegree(AngularMeasurementUnit unit, Point p1, Point p2, Point p3)
+    {
         double resultAsRadian = 0;
         if ((p1.x == p2.x && p2.x == p3.x) || (p1.y == p2.y && p2.y == p3.y))
+        {
             resultAsRadian = Math.PI;
-        else {
+        }
+        else
+        {
             double a = (p3.x - p2.x) * (p3.x - p2.x) + (p3.y - p2.y)
                 * (p3.y - p2.y);
             double b = (p3.x - p1.x) * (p3.x - p1.x) + (p3.y - p1.y)
@@ -275,7 +305,7 @@ public class DrawView extends View
             resultAsRadian = Math.acos((a + c - b) / (2 * Math.sqrt(c) * Math.sqrt(a)));
             //temp * 180 / Math.PI < cachingDegree
         }
-        if (unit == 2)
+        if (unit == AngularMeasurementUnit.Degree)
         {
             return resultAsRadian * 180 / Math.PI;
         }
