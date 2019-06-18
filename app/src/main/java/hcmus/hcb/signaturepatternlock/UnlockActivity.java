@@ -30,6 +30,10 @@ public class UnlockActivity extends Activity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        makeActivityOverlay();
+
+        setContentView(R.layout.activity_unlock);
         helper = new Helper(getApplicationContext());
         network = new KohonenNetwork();
 
@@ -47,21 +51,8 @@ public class UnlockActivity extends Activity
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        makeActivityOverlay();
-
-        setContentView(R.layout.activity_unlock);
-
-        Button btnOk = findViewById(R.id.button_ok);
         drawView = findViewById(R.id.drawview_unlock);
 
-//        btnOk.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                button_ok_onClicked();
-//            }
-//        });
     }
 
     public void button_ok_onClicked(View view)
@@ -71,11 +62,6 @@ public class UnlockActivity extends Activity
         try
         {
             //Toast.makeText(getApplicationContext(), "Can tao ho cai ", Toast.LENGTH_SHORT).show();
-            Log.i("UnlockActivity", "Can tao ho cai");
-            if (drawView == null)
-            {
-                Log.d("UnlockActivity", "Shitty null");
-            }
             if (drawView.markedPoints.size() > 0)
             {
                 if (recognize() == true)
@@ -124,16 +110,7 @@ public class UnlockActivity extends Activity
 
     private boolean recognize() throws IOException
     {
-
-        if (drawView.markedPoints == null)
-        {
-            helper.showToast("NULL HERE, WTF");
-        }
-        else
-        {
-            helper.showToast(Integer.toString(drawView.markedPoints.size()));
-        }
-        /*int id = network.recognize(drawView.nomalizeInput(drawView.markedPoints, 100));
+       int id = network.recognize(drawView.nomalizeInput(drawView.markedPoints, 100));
         Toast.makeText(getApplicationContext(), "ID: " + id, Toast.LENGTH_SHORT).show();
         for (String temp : ids)
             if (id == Integer.parseInt(temp.trim()))
@@ -143,7 +120,7 @@ public class UnlockActivity extends Activity
             }
         Toast.makeText(getApplicationContext(), "Signature does not match", Toast.LENGTH_SHORT).show();
         drawView.startNew();
-        Log.d("RECOGNIZE", "false with " + id);*/
+        Log.d("RECOGNIZE", "false with " + id);
         return false;
     }
 
