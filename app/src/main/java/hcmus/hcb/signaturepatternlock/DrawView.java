@@ -198,6 +198,7 @@ public class DrawView extends View
         drawPath.reset();
         invalidate();
     }
+
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
@@ -313,5 +314,44 @@ public class DrawView extends View
         {
             return resultAsRadian;
         }
+    }
+
+    public ArrayList<Double> nomalizeInput(ArrayList<Point> input, long timeOffset)
+    {
+        ArrayList<Double> list = new ArrayList<>();
+        ArrayList<Point> newCatched = new ArrayList<>();
+        int index = 0;
+        long time = 0;
+        while (time < 3000L && list.size() < (3000L / timeOffset))
+        {
+            if (index < input.size())
+            {
+                while (time < input.get(index).getTime() - timeOffset)
+                {
+                    list.add(0.0);
+                    time += timeOffset;
+                    Log.d("MyTime", "\nDegree = " + list.get(list.size() - 1)
+                        + " Time = " + time + " - "
+                        + input.get(index - 1).getTime());
+                }
+                newCatched.add(input.get(index));
+                list.add(input.get(index++).getDegree());
+                time += timeOffset;
+                Log.d("MyTime", "\nDegree = " + list.get(list.size() - 1)
+                    + " Time = " + time + " - " + input.get(index - 1).getTime());
+                while ((index < input.size() - 1)
+                    && time > input.get(index).getTime())
+                    index++;
+            }
+            else
+            {
+                list.add(0.0);
+                time += timeOffset;
+                Log.d("MyTime", "\nDegree = " + list.get(list.size() - 1)
+                    + " Time = " + time + " - " + input.get(index - 1).time);
+            }
+        }
+        DrawView.markedPoints = newCatched;
+        return list;
     }
 }

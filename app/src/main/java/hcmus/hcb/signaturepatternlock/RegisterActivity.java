@@ -1,19 +1,29 @@
 package hcmus.hcb.signaturepatternlock;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import hcmus.hcb.signaturepatternlock.util.KohonenNetwork;
 
 public class RegisterActivity extends Activity
 {
 
     private DrawView drawView;
     private Helper helper;
-
+    private KohonenNetwork mNetwork;
+    private int count;
+    private String temp = "";
+    long timeOffset = 100;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -27,6 +37,9 @@ public class RegisterActivity extends Activity
         drawView = (DrawView) findViewById(R.id.drawingViewReg);
 
         helper.showToast("Start register activity");
+
+        mNetwork = new KohonenNetwork();
+        count = 0;
     }
 
     public void button_clear_onClicked(View view)
@@ -37,6 +50,40 @@ public class RegisterActivity extends Activity
     public void button_next_onClicked(View view)
     {
         helper.showToast("Accept button clicked");
+        try
+        {
+            int k = mNetwork.recognize(drawView.nomalizeInput(DrawView.markedPoints, 100));
+            temp += k + " ";
+            count++;
+            if (5 - count > 0)
+            {
+//            Toast.makeText(
+//                getApplicationContext(),
+//                "ID = " + k + "\nSign more " + (5 - count) + " time!",
+//                Toast.LENGTH_LONG).show();
+                //txtReg.setText("ID = " + k + "\nSign more " + (5 - count) + " time!");
+                helper.showToast("ID = " + k + "\nSign more " + (5 - count) + " time!");
+                drawView.startNew();
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(), "Done!",
+                    Toast.LENGTH_SHORT).show();
+                ContextWrapper ctw = new ContextWrapper(this);
+                OutputStream os = ctw.openFileOutput("myID.txt",
+                    Context.MODE_PRIVATE);
+                os.write(temp.trim().getBytes());
+                os.flush();
+                os.close();
+                temp = "";
+                RegisterActivity.this.finish();
+            }
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public void button_debug_onClicked(View view)
@@ -47,15 +94,15 @@ public class RegisterActivity extends Activity
         StringBuilder strBulder = new StringBuilder();
         int count = 0;
         List<List<Integer>> image = getCurrentBinaryImage();
-        for(int i = 0; i < image.size(); i++)
+        for (int i = 0; i < image.size(); i++)
         {
-            for(int j = 0; j < image.get(i).size(); j++)
+            for (int j = 0; j < image.get(i).size(); j++)
             {
                 strBulder.append(image.get(i).get(j));
             }
             //data += "\n";
             strBulder.append('\n');
-            Log.i("LINE",String.format("+++++++++++++++++++++++%d++++++++++++++++++++++++++++++++++", count++));
+            Log.i("LINE", String.format("+++++++++++++++++++++++%d++++++++++++++++++++++++++++++++++", count++));
         }
         data = strBulder.toString();
         /*for(List<Integer> line : getCurrentBinaryImage())
@@ -94,7 +141,7 @@ public class RegisterActivity extends Activity
         for (List<Integer> line : image)
         {
             String lineAsString = "";
-            for(int value : line)
+            for (int value : line)
             {
                 if (value == 0)
                 {
@@ -110,10 +157,12 @@ public class RegisterActivity extends Activity
 
         Log.d("LOG_IMAGE", "===================================================================");
     }
+
     public void logImage(List<List<Integer>> image)
     {
         logImage(image, ' ', '1');
     }
+
     public void logImage(boolean portraitView)
     {
 
@@ -121,7 +170,8 @@ public class RegisterActivity extends Activity
         if (portraitView)
         {
             logImage(image);
-        } else
+        }
+        else
         {
             List<List<Integer>> landscapeImage = getRotateMatrix(image);
             logImage(landscapeImage);
@@ -136,7 +186,7 @@ public class RegisterActivity extends Activity
             res.add(new ArrayList<Integer>());
         }
 
-        for(List<Integer> lineSrc : srcMatrix)
+        for (List<Integer> lineSrc : srcMatrix)
         {
             int j = srcMatrix.get(0).size() - 1;
             for (List<Integer> lineDst : res)
