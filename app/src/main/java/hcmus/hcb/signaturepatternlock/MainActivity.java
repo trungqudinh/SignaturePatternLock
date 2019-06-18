@@ -4,11 +4,16 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class MainActivity extends Activity
 {
@@ -16,6 +21,7 @@ public class MainActivity extends Activity
     private Button btnSignature;
     private Button btnExit;
     private Button btnEnableLock;
+    private NumberPicker npkMaxTry;
     private Helper helper;
 
     @Override
@@ -37,9 +43,11 @@ public class MainActivity extends Activity
     {
         helper = new Helper(getApplicationContext());
         btnRegister = findViewById(R.id.button_register);
-        btnSignature = findViewById(R.id.button_signature);
+
         btnExit = findViewById(R.id.button_exit);
         btnEnableLock = findViewById(R.id.button_enable);
+
+        npkMaxTry = findViewById(R.id.npk_max_try);
     }
 
     private void setWidgetsListener()
@@ -83,20 +91,46 @@ public class MainActivity extends Activity
             public void onClick(View v)
             {
                 helper.showToast("button clicked");
-                        if (btnEnableLock.getText().equals("Enable"))
-                        {
-                            startLock();
-                            btnEnableLock.setText("Disable");
-                            MainActivity.this.finish();
-                        }
-                        else
-                        {
-                            helper.showToast("Disable lock");
-                            Intent i = new Intent(MainActivity.this, WatchDogService.class);
-                            MainActivity.this.stopService(i);
-                            btnEnableLock.setText("Enable");
-                        }
+                if (btnEnableLock.getText().equals("Enable"))
+                {
+                    try
+                    {
 
+                        ContextWrapper ctw = new ContextWrapper(MainActivity.this);
+                        OutputStream os = ctw.openFileOutput("max_try.txt",
+                            Context.MODE_PRIVATE);
+                        os.write(Integer.toString(npkMaxTry.getValue()).getBytes());
+                        os.flush();
+                        os.close();
+                    }
+                    catch (IOException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    startLock();
+                    btnEnableLock.setText("Disable");
+                    MainActivity.this.finish();
+                }
+                else
+                {
+                    helper.showToast("Disable lock");
+                    Intent i = new Intent(MainActivity.this, WatchDogService.class);
+                    MainActivity.this.stopService(i);
+                    btnEnableLock.setText("Enable");
+                }
+
+            }
+        });
+        npkMaxTry.setMinValue(1);
+        npkMaxTry.setMaxValue(5);
+        npkMaxTry.setValue(Integer.parseInt(helper.readStringFromFile("max_try.txt").trim()));
+        npkMaxTry.setOnValueChangedListener(new NumberPicker.OnValueChangeListener()
+        {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal)
+            {
+                helper.showToast("Value = " + Integer.toString(picker.getValue()));
             }
         });
     }

@@ -31,6 +31,7 @@
         android:layout_below="@+id/text_view_debug"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="34dp"/>
+<!--
     <Button
         android:text="Signature"
         android:layout_width="wrap_content"
@@ -40,14 +41,35 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="27dp"
         android:onClick="button_signature_onClicked"/>
-
+-->
+    <LinearLayout
+        android:layout_marginTop="27dp"
+        android:layout_below="@+id/text_view_message"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/configuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Max try"/>
+        <NumberPicker
+            android:id="@+id/npk_max_try"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:scrollbarSize="10dp">
+            </NumberPicker>
+    </LinearLayout>
     <TextView
         android:text="Add more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="66dp"
         android:id="@+id/text_view_more"
-        android:layout_below="@+id/button_signature"
+        android:layout_below="@+id/configuration"
         android:layout_centerHorizontal="true" />
     <Button
         android:text="Register"
