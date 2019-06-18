@@ -53,9 +53,9 @@ public class RegisterActivity extends Activity
         try
         {
             int k = mNetwork.recognize(drawView.nomalizeInput(drawView.markedPoints, 100));
-            temp += k + " ";
+            temp += helper.getEncryption(Integer.toString(k)) + " ";
             count++;
-            if (5 - count > 0)
+            if (5 > count)
             {
 //            Toast.makeText(
 //                getApplicationContext(),

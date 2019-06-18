@@ -1,5 +1,5 @@
 package hcmus.hcb.signaturepatternlock;
-
+import hcmus.hcb.signaturepatternlock.util.SecurityManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -157,5 +157,11 @@ public class Helper extends Activity
             ioe.printStackTrace();
         }
         return stringBuffer.toString();
+    }
+    public String getEncryption(String text)
+    {
+        SecurityManager.HashMethod hashMethod = SecurityManager.getAppropriateHash();
+        return SecurityManager.getHashedPassword(hashMethod, text);
+
     }
 }

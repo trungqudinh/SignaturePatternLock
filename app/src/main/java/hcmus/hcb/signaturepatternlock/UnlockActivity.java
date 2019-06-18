@@ -28,6 +28,7 @@ public class UnlockActivity extends Activity
 
     private int count;
     private int maxTry;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -108,17 +109,25 @@ public class UnlockActivity extends Activity
     }
 
 
-
     private boolean recognize() throws IOException
     {
-       int id = network.recognize(drawView.nomalizeInput(drawView.markedPoints, 100));
+        int id = network.recognize(drawView.nomalizeInput(drawView.markedPoints, 100));
         Toast.makeText(getApplicationContext(), "ID: " + id, Toast.LENGTH_SHORT).show();
         for (String temp : ids)
-            if (id == Integer.parseInt(temp.trim()))
+        {
+
+            if (helper.getEncryption(Integer.toString(id)).trim().equals(temp.trim()))
             {
                 Log.d("RECOGNIZE", "true");
                 return true;
             }
+            else
+            {
+                Log.d("RECOGNIZE", "false with " + id);
+                Log.d("RECOGNIZE", "Receive " + helper.getEncryption(Integer.toString(id)));
+                Log.d("RECOGNIZE", "Expect " + temp.trim());
+            }
+        }
         Toast.makeText(getApplicationContext(), "Trying time: " + count + "\nSignature does not match", Toast.LENGTH_SHORT).show();
         drawView.startNew();
         Log.d("RECOGNIZE", "false with " + id);
@@ -131,6 +140,7 @@ public class UnlockActivity extends Activity
         Log.i("Locker", "Locking = " + Boolean.toString(this.isLocking));
         Toast.makeText(getApplicationContext(), "Locking = " + Boolean.toString(this.isLocking), Toast.LENGTH_LONG);
     }
+
     public String readStringFromFile(String filePath)
         throws FileNotFoundException, IOException
     {
